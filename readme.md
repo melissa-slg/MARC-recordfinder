@@ -46,4 +46,4 @@ At the end of the session, you will have a `collection_records.mrc` file that yo
 
 Before you run another batch, make sure to move all result files out of the `/Digital Catalog Items`.
 
-If you run into any problems, please screenshot the error message if you can and then email me.
+If you run into any problems, please screenshot the error message if you can and then email me at **melissa@slgardens.org**.
