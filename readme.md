@@ -7,19 +7,20 @@ This is a small project that automates searching for MARC records, freeing up ti
 ## Prerequisites
 This program uses Chrome. Please make sure you have the newest version of Chrome installed on your computer.
 
-Python is not enough for this program to run. You will need to install some packages. Make sure you have the following:
+### Installing Dependencies For the First Time
+Python is not enough for this program to run. You will need to install some packages.
+1. Open command prompt
+2. Enter `cd Documents/GitHub/MARC-recordfinder`
+3. Enter `pip install -r requirements.txt`.
 
-- pandas ( terminal command: `pip install pandas` )
-- beautifulSoup ( `pip install beautifulsoup4` )
-- Selenium ( `pip install selenium` )
+**You only need to do this the first time you run this program.** Afterwards, just remember to update your dependencies (see below).
 
 ## Before You Run
 
-### Update Your Extensions
+### Update Your Dependencies
 1. Open command prompt
-2. Enter `pip install pandas --upgrade` and allow to finish
-3. Enter `pip install beautifulsoup4 --upgrade` and allow to finish
-4. Enter `pip install selenium --upgrade` and allow to finish
+2. Enter `cd Documents/GitHub/MARC-recordfinder`
+2. Enter `pip install -r requirements.txt --upgrade` and allow to finish
 
 ### Required Headers
 The scripts expect to receive a specifically formatted file. Your titles should be organized in a CSV file with the following headers, **spelled exactly**:
