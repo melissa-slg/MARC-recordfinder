@@ -13,10 +13,10 @@ def zeroReplace(userfile):
     df = df.fillna('')
     try:
         for index, row in df.iterrows():
-            LCCN = row['LCCN'].strip()
+            LCCN = str(row['LCCN']).strip()
             df.at[index, 'LCCN'] =  ''.join('0'*(8-len(LCCN) + 1) if c == '-' else c for c in LCCN)
         df.to_csv(userfile, index=False)
-    except Exception, e:
+    except Exception as e:
         raise Exception(e)
     
 def welcome():
@@ -59,6 +59,7 @@ def main():
         timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         errLOG.write("{0} | zeroAdder.py: {1}\n".format(timestamp, e))
         errLOG.close()
-        raise Exception(e)
+        print("-"*32 + f"\nThe program encountered an error. Please consult errorLog.txt for details.\n{e}\nPlease try again after troubleshooting. Goodbye.")
+        raise SystemExit()
 
 main()

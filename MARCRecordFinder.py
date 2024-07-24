@@ -256,7 +256,7 @@ def main():
         timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         errLOG.write("{0} | MARCRecordFinder.py: {1}\n".format(timestamp, e))
         errLOG.close()
-        print("-"*32 + f"\nThe program encountered an error. Please consult the details below.\n{e}\nPlease try again after troubleshooting. Goodbye.")
+        print("-"*32 + f"\nThe program encountered an error. Please consult errorLog.txt for details.\n{e}\nPlease try again after troubleshooting. Goodbye.")
         
     
 
