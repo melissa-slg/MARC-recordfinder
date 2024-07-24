@@ -4,6 +4,8 @@
 #iterate through and replace
 import pandas as pd
 import os.path
+from datetime import datetime
+
 def zeroReplace(userfile):
     #Convert CSV file to dataframe
     print(f"Reading {userfile}...")
@@ -45,8 +47,15 @@ def welcome():
 
 def main():
     file_name = welcome()
-    if file_name:
-        zeroReplace(file_name)
-    print("Processing complete. Please check your file for results. Goodbye.")
+    try:
+        if file_name:
+            zeroReplace(file_name)
+        print("Processing complete. Please check your file for results. Goodbye.")
+    except Exception as e:
+        errLOG = open("errorLog.txt", 'a', encoding='utf-8')
+        timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        errLOG.write("{0} | {1}\n".format(timestamp, e))
+        errLOG.close()
+        raise ValueError(e)
 
 main()
