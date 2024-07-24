@@ -252,6 +252,10 @@ def main():
             #download_records(user_csv)
             print("Thank you for using the MARC record finder. Goodbye.")
     except Exception as e:
+        errLOG = open("errorLog.txt", 'a', encoding='utf-8')
+        timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        errLOG.write("{0} | MARCRecordFinder.py: {1}\n".format(timestamp, e))
+        errLOG.close()
         print("-"*32 + f"\nThe program encountered an error. Please consult the details below.\n{e}\nPlease try again after troubleshooting. Goodbye.")
         
     

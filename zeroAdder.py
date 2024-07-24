@@ -54,7 +54,7 @@ def main():
     except Exception as e:
         errLOG = open("errorLog.txt", 'a', encoding='utf-8')
         timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        errLOG.write("{0} | {1}\n".format(timestamp, e))
+        errLOG.write("{0} | zeroAdder.py: {1}\n".format(timestamp, e))
         errLOG.close()
         raise ValueError(e)
 
