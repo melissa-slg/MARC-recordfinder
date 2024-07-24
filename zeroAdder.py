@@ -53,7 +53,7 @@ def main():
     try:
         if file_name:
             zeroReplace(file_name)
-        print("Processing complete. Please check your file for results. Goodbye.")
+        input("Processing complete. Please check your file for results. Press 'Enter' to exit.")
     except Exception as e:
         errLOG = open("errorLog.txt", 'a', encoding='utf-8')
         timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S")

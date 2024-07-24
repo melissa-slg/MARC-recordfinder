@@ -250,7 +250,7 @@ def main():
             full_search(user_csv)
             print("-"*32 + f"\nThank you for waiting! Record Finder has finished traversing {user_csv}. Please check your folder for results.\n" + "-"*32)
             #download_records(user_csv)
-            print("Thank you for using the MARC record finder. Goodbye.")
+            input("Thank you for using the MARC record finder. Press 'Enter' to exit.")
     except Exception as e:
         errLOG = open("errorLog.txt", 'a', encoding='utf-8')
         timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
