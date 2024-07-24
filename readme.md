@@ -39,12 +39,12 @@ It is not necessary for each book to have every single value, but each entry wil
 
 ## Running the Program
 1. Make sure your CSV is named `MM.DD_restOfFilename.csv`.
-2. Move your CSV file into the `../Digital Catalog Items`.
+2. Move your CSV file into the `../MARC-recordfinder`.
 4. If your LCCN are not formatted with zeroes, first run `zeroAdder.py`
 5. Then run `MARCRecordFinder.py`
 
 At the end of the session, you will have a `collection_records.mrc` file that you can then use to import records into the digital catalog. In addition, the script may also product a `not_found.csv`, `skipped.csv`, or `multilink.csv`, depending on the results of its search. These contain titles that may need manual inspection.
 
-Before you run another batch, make sure to move all result files out of the `/Digital Catalog Items`.
+Before you run another batch, make sure to move all result files out of `/MARC-recordfinder`.
 
 If you run into any problems, please screenshot the error message if you can and then email me at **melissa@slgardens.org**.
