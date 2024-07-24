@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import csv
 import math
-import os.path
+import os
 import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -9,8 +9,8 @@ from selenium.webdriver.common.by import By
 import time
 
 def export_skipped(skipped_list, userfile):
-    print(f"Some books were intentionally skipped for manual entry. Please see {userfile[0:5]}_skipped.csv for details.")
-    print(f"Building {userfile[0:5]}_skipped.csv ...")
+    print(f"Some books were intentionally skipped for manual entry. Please see {userfile[0:5]}_skipped_{len(skipped_list)}.csv for details.")
+    print(f"Building {userfile[0:5]}_skipped_{len(skipped_list)}.csv ...")
     pd.DataFrame(skipped_list).to_csv(f'{userfile[0:5]}_skipped_{len(skipped_list)}.csv', index=False)
     print(f"{userfile[0:5]}_skipped_{len(skipped_list)}.csv can now be found in local folder.")
 def export_unfound(not_found_list, userfile):    
@@ -26,7 +26,8 @@ def export_multilink(df, userfile):
     print(f"{userfile[0:5]}_multilink_{multilink_csv.shape[0]}.csv can now be found in local folder.")
 
 def download_records(userfile):
-    driver = webdriver.Chrome(executable_path=r'C:\Users\SLG\Documents\MARC-recordfinder\chromedriver-win64\chromedriver.exe')
+    webstring = os.getcwd() + "\chromedriver-win64\chromedriver.exe"
+    driver = webdriver.Chrome(executable_path=webstring)
     df = pd.read_csv(userfile)
     df = df.fillna('')
     collection_records = open("collection_records.mrc" , 'a', encoding='utf-8')
