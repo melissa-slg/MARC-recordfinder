@@ -26,14 +26,14 @@ def export_multilink(df, userfile):
     print(f"{userfile[0:5]}_multilink_{multilink_csv.shape[0]}.csv can now be found in local folder.")
 
 def download_records(userfile):
-    driver = webdriver.Chrome(executable_path=r'C:\Users\SLG\Documents\Digital Catalog Items\chromedriver-win64\chromedriver.exe')
+    driver = webdriver.Chrome(executable_path=r'C:\Users\SLG\Documents\MARC-recordfinder\chromedriver-win64\chromedriver.exe')
     df = pd.read_csv(userfile)
     df = df.fillna('')
     collection_records = open("collection_records.mrc" , 'a', encoding='utf-8')
 
     #set download directory
     the_options = Options()
-    directory_path = r"C:\Users\SLG\Documents\Digital Catalog Items"
+    directory_path = os.getcwd()
     the_options.add_experimental_option("prefs", {"download.default_directory": directory_path})
     driver = webdriver.Chrome(options=the_options)
     print("Now collecting MARC records for searched books.")
@@ -74,118 +74,6 @@ def download_records(userfile):
     collection_records.close()
     print("MARC records compiled. Please find collection_records.mrc for details.")       
 
-def find_records(userfile):
-    #Convert CSV file to dataframe
-    df = pd.read_csv(userfile)
-    df = df.fillna('')
-    df['Result Type'] = ''
-    df['Existing LCCN'] = ''
-    df['Multi-link'] = ''
-    not_found_list = []
-    skipped_list = []
-    
-    try:
-        driver = webdriver.Chrome()
-        
-        #search time
-        for index, row in df.iterrows():
-            lccn = row['LCCN']
-            isbn = row['ISBN']
-            title = row['Short Title']
-            author = row['Author']
-            cryear = row['Copyright Year']
-            callnum = row['Call No.']
-            notes = row['Notes']
-
-            if 'skip' in notes:
-                print(f"Special case: Skipping {title}")
-                skipped_list.append({"LCCN": lccn,"ISBN": isbn, "Short Title": title, "Author":author, "Copyright Year":cryear, "Call No.":callnum, "Notes":notes})
-            else:
-                print(f"Searching for {title} (Book {index+1} of {df.shape[0]})...")
-                
-                #initiate driver for automated search
-                url = 'https://catalog.loc.gov/vwebv/searchAdvanced'
-        
-                #try each search type
-                permalink_text = ""
-                found = False
-                if lccn: #searching by control number
-                    url = f"https://catalog.loc.gov/vwebv/search?searchArg1={lccn}&argType1=all&searchCode1=KNUM&searchType=2&combine2=and&searchArg2=&argType2=all&searchCode2=GKEY&combine3=and&searchArg3=&argType3=all&searchCode3=GKEY&year=1523-2023&fromYear=&toYear=&location=all&place=all&type=all&language=all&recCount=25"   
-                    driver.get(url)
-                    time.sleep(10)
-                    soup = BeautifulSoup(driver.page_source, "html.parser")
-                    permalink_element = soup.find('a', title='Click to copy permalink for this item')
-                    results_bar_element = soup.find('div', class_='results-bar')
-            
-                    if permalink_element: #direct url exists
-                        permalink_text = permalink_element.get_text(strip=True)
-                        found = True
-                        df.at[index, 'Result Type'] = "book page"
-                    elif results_bar_element:
-                        df.at[index, 'Multi-link'] = url
-                        df.at[index, 'Result Type'] = "multi-link"
-                        found = True
-                        
-                if isbn and not found: #searching by isbn
-                    url = f"https://catalog.loc.gov/vwebv/search?searchArg1={isbn}&argType1=all&searchCode1=KNUM&searchType=2&combine2=and&searchArg2=&argType2=all&searchCode2=GKEY&combine3=and&searchArg3=&argType3=all&searchCode3=GKEY&year=1523-2023&fromYear=&toYear=&location=all&place=all&type=all&language=all&recCount=25"    
-                    driver.get(url)
-                    time.sleep(10)
-                    soup = BeautifulSoup(driver.page_source, "html.parser")
-                    permalink_element = soup.find('a', title='Click to copy permalink for this item')
-                    results_bar_element = soup.find('div', class_='results-bar')
-            
-                    if permalink_element: #direct url exists
-                        permalink_text = permalink_element.get_text(strip=True)
-                        found = True
-                        df.at[index, 'Result Type'] = "book page"
-                    elif results_bar_element:
-                        df.at[index, 'Multi-link'] = url
-                        df.at[index, 'Result Type'] = "multi-link"
-                        found = True
-                        
-                if not found: #searching by title, author, year
-                    url = f"https://catalog.loc.gov/vwebv/search?searchArg1={title}&argType1=all&searchCode1=KTIL&searchType=2&combine2=and&searchArg2={author}&argType2=all&searchCode2=KNAM&combine3=and&searchArg3={cryear}&argType3=all&searchCode3=KPUB&year=1523-2023&fromYear=&toYear=&location=all&place=all&type=all&language=all&recCount=25"
-                    driver.get(url)
-                    time.sleep(10)
-                    soup = BeautifulSoup(driver.page_source, "html.parser")
-                    permalink_element = soup.find('a', title='Click to copy permalink for this item')
-                    results_bar_element = soup.find('div', class_='results-bar')
-            
-                    if permalink_element: #direct url exists
-                        permalink_text = permalink_element.get_text(strip=True)
-                        df.at[index, 'Result Type'] = "book page"
-                        found = True
-                    elif results_bar_element:
-                        df.at[index, 'Multi-link'] = url
-                        df.at[index, 'Result Type'] = "multilink"
-                        found = True
-                    else: #book just couldn't be found at all
-                        df.at[index, 'Result Type'] = "not found"
-                        print(f"    Could not find record for {title}.")
-                        not_found_list.append({"LCCN": lccn,"ISBN": isbn, "Short Title": title, "Author":author, "Copyright Year":cryear, "Call No.":callnum, "Notes":notes})
-
-                if permalink_text:
-                    df.at[index, 'Existing LCCN'] = permalink_text
-
-        #close browser pages
-        driver.quit()
-        #convert results to csv
-        df.to_csv(userfile, index=False)
-        print("Search complete.")
-        
-        #construct not_found.csv
-        if len(not_found_list) > 0:
-            export_unfound(not_found_list, userfile)
-        if len(skipped_list) > 0:
-            export_skipped(skipped_list, userfile)
-    except Exception as e:
-        df.to_csv(userfile, index=False)
-        if len(not_found_list) > 0:
-            export_unfound(not_found_list, userfile)
-        if len(skipped_list) > 0:
-            export_skipped(skipped_list, userfile)
-        raise ValueError(e)
-
 def full_search(userfile):
     #Convert CSV file to dataframe
     df = pd.read_csv(userfile)
@@ -201,7 +89,7 @@ def full_search(userfile):
     
     #set download directory
     the_options = Options()
-    directory_path = r"C:\Users\SLG\Documents\Digital Catalog Items"
+    directory_path = os.getcwd()
     the_options.add_experimental_option("prefs", {"download.default_directory": directory_path})
     
     try:
