@@ -11,10 +11,13 @@ def zeroReplace(userfile):
     print(f"Reading {userfile}...")
     df = pd.read_csv(userfile)
     df = df.fillna('')
-    for index, row in df.iterrows():
-        LCCN = row['LCCN'].strip()
-        df.at[index, 'LCCN'] =  ''.join('0'*(8-len(LCCN) + 1) if c == '-' else c for c in LCCN)
-    df.to_csv(userfile, index=False)
+    try:
+        for index, row in df.iterrows():
+            LCCN = row['LCCN'].strip()
+            df.at[index, 'LCCN'] =  ''.join('0'*(8-len(LCCN) + 1) if c == '-' else c for c in LCCN)
+        df.to_csv(userfile, index=False)
+    except Exception, e:
+        raise Exception(e)
     
 def welcome():
     #print welcome message & explain steps
@@ -56,6 +59,6 @@ def main():
         timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         errLOG.write("{0} | zeroAdder.py: {1}\n".format(timestamp, e))
         errLOG.close()
-        raise ValueError(e)
+        raise Exception(e)
 
 main()
